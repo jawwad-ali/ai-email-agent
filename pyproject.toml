@@ -1,0 +1,14 @@
+[project]
+name = "ai-email-agent"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+
+[project.scripts]
+ai-email-agent = "ai_email_agent:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
