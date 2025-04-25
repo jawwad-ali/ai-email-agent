@@ -3,7 +3,11 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
+from dotenv import load_dotenv
+from agents import AsyncOpenAI, OpenAIChatCompletionsModel
+from agents.run import RunConfig
 
+# Connection with Gmail API
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
 
@@ -29,3 +33,26 @@ if os.path.exists("token.json"):
         token.write(creds.to_json())
 
 service = build("gmail", "v1", credentials=creds)
+
+
+# LLM Connection
+load_dotenv()
+gemini_api_key = os.getenv("GEMINI_API_KEY")
+
+# Check if the API key is present; if not, raise an error
+if not gemini_api_key:
+    raise ValueError("GEMINI_API_KEY is not set. Please ensure it is defined in your .env file.")
+
+external_client = AsyncOpenAI(
+    api_key = gemini_api_key,
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
+model = OpenAIChatCompletionsModel(
+    model = "gemini-2.0-flash",
+    openai_client = external_client
+)
+config = RunConfig(
+    model = model,
+    model_provider = external_client,
+    tracing_disabled = True
+)

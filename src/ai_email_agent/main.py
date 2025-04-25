@@ -1,75 +1,18 @@
-from googleapiclient.errors import HttpError
-import base64
-import re
-from connection import service
+from agents import Agent, Runner
+from ai_email_agent.connection import config, model
+from ai_email_agent.tools import get_email_by_id
 
-def main():
-  """Shows basic usage of the Gmail API.
-  Lists the user's Gmail labels.
-  """
-  
+def run_llm():
+    agent = Agent(
+        name = "Assistant",
+        instructions = "Answer the users query in the most appropriate way",
+        model = model,
+        tools = [get_email_by_id]
+    )
 
-#   try:
-#     # Call the Gmail API
-#     service = build("gmail", "v1", credentials=creds)
-#     results = service.users().labels().list(userId="me").execute()
-#     labels = results.get("labels", [])
+    result = Runner.run_sync(agent, "I want to reterive the email whoses id is 1965e0b50f61640f", run_config=config)
+    print(result.final_output)
 
-#     if not labels:
-#       print("No labels found.")
-#       return
-#     print("Labels:")
-#     for label in labels:
-#       print(label["name"])
-
-#   except HttpError as error:
-#     # TODO(developer) - Handle errors from gmail API.
-#     print(f"An error occurred: {error}")
-
-
-############ Email
-def get_message(service, message_id):
-    try:
-        # Fetch the full message details
-        message = service.users().messages().get(userId='me', id=message_id).execute()
-
-        # Print basic message details (headers)
-        headers = message['payload']['headers']
-        for header in headers:
-            if header['name'] == 'From':
-                print(f"From: {header['value']}")
-            elif header['name'] == 'Subject':
-                print(f"Subject: {header['value']}")
-        
-        # Get the payload of the email
-        payload = message['payload']
-        body = None
-        
-        # Check if the email is multipart (i.e., has parts like text, HTML, attachments)
-        if 'parts' in payload:
-            for part in payload['parts']:
-                if part['mimeType'] == 'text/plain':  # Check for plain text
-                    body = part['body'].get('data', '')
-                    if body:
-                        body = base64.urlsafe_b64decode(body.encode('ASCII')).decode('utf-8')
-                        print(f"Plain Text Body: {body}")
-
-        else:
-            # If no parts, fallback to the main body
-            body = payload['body'].get('data', '')
-            if body:
-                body = base64.urlsafe_b64decode(body.encode('ASCII')).decode('utf-8')
-                print(f"Body: {body}")
-    
-    except Exception as error:
-        print(f"An error occurred: {error}")
-
-# Function to clean HTML content by removing HTML tags
-def clean_html(html_content):
-    # Remove the HTML tags using regular expressions
-    clean_text = re.sub(r'<.*?>', '', html_content)
-    return clean_text
 
 if __name__ == "__main__":
-    get_message(service, '1965e455ddac2e05')
-    main()
+    run_llm()

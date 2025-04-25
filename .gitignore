@@ -1,2 +1,3 @@
 src/ai_email_agent/credentials.json
 src/ai_email_agent/token.json
+.env
