@@ -22,3 +22,18 @@
     }
   ]
 }
+1967078900308559
+1966ef6cd8d96c72
+
+=========================================================================================================================================
+
+The response I want eveytime. This is the repsosne but LLM is not responding with it everytime
+
+Triage agent: Skipping item: HandoffCallItem
+Handed off output item from Triage agent to Email Finder
+Email Finder calling a tool.
+Email Finder tool call output {'You are invited to an interview for the AI Engineer Position. The interview\r\nwill happen at 10AM PKT\r\n'}
+Agent Name Email Finder: OK. I found the email with ID 1966ef6cd8d96c72. Here are the details:
+
+Body: You are invited to an interview for the AI Engineer Position. The interview
+will happen at 10AM PKT

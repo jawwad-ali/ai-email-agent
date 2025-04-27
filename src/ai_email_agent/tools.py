@@ -2,32 +2,32 @@ import base64
 import re
 from agents import function_tool
 from ai_email_agent.connection import service
+from agents import RunContextWrapper
+from ai_email_agent.model import EmailAgentContext
 
-@function_tool('get_email')
-def get_email_by_id(message_id: str | int) -> str:
+@function_tool
+def get_email_by_id(email_id: str | int) -> str:
     """
-    Fetches an email by its message ID using the Gmail API.
+    Fetches an email by its email ID using the Gmail API.
 
     Args:
-        email_model (EmailModel): An instance of the EmailModel class containing service and message_id.
+        email_id (str | int): The ID of the email message to fetch.
 
     Returns:
-        str: This function prints the email details to the console, including sender, subject, and body.
+        str: The email body or a message indicating an error.
     """
     try:
-        # Fetch the full message details
-        message = service.users().messages().get(userId='me', id=message_id).execute()
-        
         # Fetch the full message details using the Gmail API
-        message = service.users().messages().get(userId='me', id=message_id).execute()
+        message = service.users().messages().get(userId='me', id=email_id).execute()
+        
+        # headers = message['payload']['headers']
+        # for header in headers:
 
-        # Print basic message details (headers)
-        headers = message['payload']['headers']
-        for header in headers:
-            if header['name'] == 'From':
-                print(f"From: {header['value']}")
-            elif header['name'] == 'Subject':
-                print(f"Subject: {header['value']}")
+            # if header['name'] == 'From':
+            #     print('Email sent from', header['value'])
+
+            # elif header['name'] == 'Subject':
+            #     print("Emails Subject", header['value'])
 
         # Get the payload of the email
         payload = message['payload']
@@ -40,17 +40,17 @@ def get_email_by_id(message_id: str | int) -> str:
                     body = part['body'].get('data', '')
                     if body:
                         body = base64.urlsafe_b64decode(body.encode('ASCII')).decode('utf-8')
-                        print(f"Plain Text Body: {body}")
-                        return "Successfully fetched"
-
-        else:
-            # If no parts, fallback to the main body
-            body = payload['body'].get('data', '')
-            if body:
-                body = base64.urlsafe_b64decode(body.encode('ASCII')).decode('utf-8')
-                print(f"Body: {body}")
-                return "I am an else block"
-
+                        # print('body', body)
+                        return body
+                        
     except Exception as error:
         print(f"An error occurred: {error}")
         return "Failed to fetch email"
+
+@function_tool("sir_qasim")
+def sir_qasim():
+    return "I am AI ENGINEER"
+
+@function_tool("ameen")
+def sir_ameen():
+    return "I am CLOUD EXPERT"

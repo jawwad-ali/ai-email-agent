@@ -33,7 +33,7 @@ if os.path.exists("token.json"):
         token.write(creds.to_json())
 
 service = build("gmail", "v1", credentials=creds)
-
+print('GMAIL SERVICESS', service)
 
 # LLM Connection
 load_dotenv()
