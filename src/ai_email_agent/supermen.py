@@ -7,8 +7,10 @@ from .globalFunction import on_email_summarize_handoff
 email_finder_agent = Agent(
     name = "Email Finder",
     handoff_description="A helpful agent that can read the email by id provided by the user.",
-    instructions = """You are an assistant capable of fetching emails based on a provided email ID. Your job is only to make fetch the email
-    do not summarise it.""",
+    instructions = """
+        You are an assistant capable of fetching emails based on a provided email ID. Your job is only to make fetch the email
+        do not summarise it.
+    """,
     model = model,
     tools = [get_email_by_id]
 )
